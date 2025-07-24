@@ -7,7 +7,7 @@ import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 // Lazy‑loaded feature modules
-const ProductionPage = lazy(() => import("./pages/production/ProductionPage"));
+const ProductionPage = lazy(() => import("./pages/Production/ProductionPage"));
 const UsersPage = lazy(() => import("./pages/admin/UsersPage"));
 
 export default function App() {

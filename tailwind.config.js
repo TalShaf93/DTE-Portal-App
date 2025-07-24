@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
       colors: {
         // Brand palette (root‑level keys so `bg-brand-361` works)
         "brand-376": "#A8C94B", // primary lime
