@@ -1,41 +1,150 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
-import { Home, Package, Users, Factory } from "lucide-react";
-import clsx from "clsx";
+import React from 'react';
+import {
+    Home,
+    Activity,
+    Package,
+    Shield
+} from 'lucide-react';
 
-const links = [
-    { to: "/", label: "Dashboard", icon: Home },
-    { to: "/production", label: "Production", icon: Factory },
-    { to: "/inventory", label: "Inventory", icon: Package },
-    { to: "/admin", label: "Admin", icon: Users, roles: ["admin"] },
-];
+import { cn, focusRing } from '../utils/cn';
 
-export default function Sidebar({ role }) {
+/**
+ * Sidebar Component - Desktop only navigation
+ * 
+ * Features:
+ * - Desktop only (completely hidden on mobile/tablet)
+ * - Always visible on desktop
+ * - Simplified menu structure
+ * - Clear active state indication
+ * - Full height sidebar
+ */
+
+const Sidebar = ({
+    onNavigate = () => { },
+    currentPath = '/',
+    user = { role: 'admin' },
+    className = '',
+    ...props
+}) => {
+    // Simplified navigation items
+    const navItems = [
+        {
+            icon: Home,
+            label: 'Dashboard',
+            path: '/',
+            roles: ['admin', 'manager', 'operator', 'viewer']
+        },
+        {
+            icon: Activity,
+            label: 'Production',
+            path: '/production',
+            badge: 'Live',
+            roles: ['admin', 'manager', 'operator']
+        },
+        {
+            icon: Package,
+            label: 'Inventory',
+            path: '/inventory',
+            roles: ['admin', 'manager', 'operator']
+        },
+        {
+            icon: Shield,
+            label: 'User Management',
+            path: '/admin/users',
+            roles: ['admin']
+        }
+    ];
+
+    // Filter navigation items by user role
+    const filteredNavItems = navItems.filter(item =>
+        user && item.roles.includes(user.role)
+    );
+
+    // Handle navigation
+    const handleNavigate = (path) => {
+        onNavigate(path);
+    };
+
     return (
-        <aside className="hidden md:block w-56 bg-gradient-to-b from-grad-start to-grad-end p-4">
-            <nav className="space-y-2">
-                {links.map(({ to, label, icon: Icon, roles }) => {
-                    if (roles && !roles.includes(role)) return null;
-                    console.log(Icon)
+        <aside
+            className={cn(
+                // Base styles - full height sidebar, desktop only
+                'hidden md:block sm:block', // Completely hidden on mobile/tablet
+                'fixed left-0 top-[73px] h-[calc(100vh-73px)] bg-white border-r border-gray-200 z-30',
+                'w-64',
+
+                className
+            )}
+            {...props}
+        >
+            {/* Navigation Menu */}
+            <nav className="p-4 space-y-2 flex-1 overflow-y-auto">
+                {filteredNavItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = currentPath === item.path ||
+                        (item.path !== '/' && currentPath.startsWith(item.path + '/'));
+
                     return (
-                        <NavLink
-                            key={to}
-                            to={to}
-                            className={({ isActive }) =>
-                                clsx(
-                                    "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium",
-                                    isActive
-                                        ? "bg-white text-brand-349"
-                                        : "text-white/85 hover:bg-white/10"
-                                )
-                            }
+                        <button
+                            key={item.path}
+                            onClick={() => handleNavigate(item.path)}
+                            className={cn(
+                                'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left',
+                                'transition-all duration-200 group relative',
+                                focusRing,
+                                {
+                                    // Active state - much more visible
+                                    'bg-brand-361 text-white shadow-md border-l-4 border-brand-349': isActive,
+                                    // Inactive state  
+                                    'text-gray-700 hover:bg-brand-gradient hover:bg-opacity-10 hover:text-brand-361': !isActive
+                                }
+                            )}
                         >
-                            <Icon size={18} strokeWidth={1.8} />
-                            <span>{label}</span>
-                        </NavLink>
+                            {/* Active indicator bar */}
+                            {isActive && (
+                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-349 rounded-r-full" />
+                            )}
+
+                            {/* Icon */}
+                            <Icon
+                                size={20}
+                                className={cn(
+                                    'flex-shrink-0 transition-all duration-200',
+                                    isActive ? 'text-white' : 'text-gray-600 group-hover:text-brand-361'
+                                )}
+                            />
+
+                            {/* Label */}
+                            <span className="flex-1 font-medium">
+                                {item.label}
+                            </span>
+
+                            {/* Badge */}
+                            {item.badge && (
+                                <span className={cn(
+                                    'px-2 py-0.5 text-xs font-semibold rounded-full',
+                                    isActive
+                                        ? 'bg-white/20 text-white'
+                                        : 'bg-brand-376 text-white'
+                                )}>
+                                    {item.badge}
+                                </span>
+                            )}
+                        </button>
                     );
                 })}
             </nav>
+
+            {/* Footer */}
+            <div className="p-4 border-t border-gray-200 bg-gray-50">
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span>System Online</span>
+                    <span className="ml-auto text-xs">v1.0.0</span>
+                </div>
+            </div>
         </aside>
     );
-}
+};
+
+export default Sidebar;
