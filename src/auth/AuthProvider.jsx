@@ -1,34 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
+import api from "../api/users";
+import { API_ENDPOINTS } from "../constants";
 
 export const AuthProvider = ({ children }) => {
-    // null | { email, role }
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
-    /**
-     * Dummy login – resolves if credentials match hard‑coded admin user.
-     * @param {string} email
-     * @param {string} password
-     */
-    const login = (email, password) => {
-        setLoading(true);
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                const ok = (email === "admin" || email === "admin@danenergy.com") && password === "12345";
-                if (ok) {
-                    setUser({ email, role: "admin" });
-                    setLoading(false);
-                    resolve();
-                } else {
-                    setLoading(false);
-                    reject(new Error("Invalid credentials"));
-                }
-            }, 400); // small delay for UX
-        });
+    const fetchCurrentUser = async () => {
+        try {
+            const data = await api.get(API_ENDPOINTS.AUTH.CURRENT_USER);
+            setUser(data);
+        } catch {
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const logout = () => setUser(null);
+    useEffect(() => {
+        fetchCurrentUser();
+    }, []);
+
+    const login = async (username, password) => {
+        setLoading(true);
+        const { user: loggedIn } = await api.post(API_ENDPOINTS.AUTH.LOGIN, { username, password });
+        setUser(loggedIn);
+        setLoading(false);
+    };
+
+    const logout = async () => {
+        try {
+            await api.post(API_ENDPOINTS.AUTH.LOGOUT);
+        } finally {
+            setUser(null);
+        }
+    };
 
     return (
         <AuthContext.Provider value={{ user, loading, login, logout }}>
