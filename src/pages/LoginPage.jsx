@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from "../auth/useAuth";
 import Logo from "../components/Logo";
 
@@ -7,6 +8,7 @@ export default function LoginPage() {
     const { user, login } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -15,12 +17,12 @@ export default function LoginPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setError(null);
         try {
             await login(email, password);
         } catch (err) {
             setError("Invalid credentials");
             setLoading(false);
-            console.log(err)
         }
     };
 
@@ -34,29 +36,52 @@ export default function LoginPage() {
                     <Logo className="w-10 h-10" />
                     <h1 className="text-xl font-semibold text-brand-349">Sign In</h1>
                 </div>
-                <input
-                    type="email"
-                    className="w-full border rounded-lg px-3 py-2"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-                <input
-                    type="password"
-                    className="w-full border rounded-lg px-3 py-2"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-                {error && <p className="text-red-600 text-sm">{error}</p>}
+
+                <div className="space-y-4">
+                    <input
+                        type="email"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-361/40 focus:border-brand-361 transition-colors"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        disabled={loading}
+                        required
+                    />
+
+                    <div className="relative">
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-brand-361/40 focus:border-brand-361 transition-colors"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            disabled={loading}
+                            required
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                            disabled={loading}
+                        >
+                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                    </div>
+                </div>
+
+                {error && (
+                    <p className="text-red-600 text-sm bg-red-50 p-2 rounded border border-red-200">
+                        {error}
+                    </p>
+                )}
+
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-brand-361 hover:bg-brand-349 text-white py-2 rounded-lg disabled:opacity-50"
+                    className="w-full bg-brand-361 hover:bg-brand-349 text-white py-2 rounded-lg disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
                 >
-                    {loading ? "Signing in…" : "Login"}
+                    {loading && <Loader2 size={16} className="animate-spin" />}
+                    {loading ? "Signing in…" : "Sign In"}
                 </button>
             </form>
         </div>
