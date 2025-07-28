@@ -1,12 +1,7 @@
 import React from 'react';
-import {
-    Home,
-    Activity,
-    Package,
-    Shield
-} from 'lucide-react';
-
+import { Home, Activity, Package, Shield, CheckCircle, Wrench, BarChart3 } from 'lucide-react';
 import { cn, focusRing } from '../utils/cn';
+import { useSidebarContext } from '../hooks/sidebar/useSidebarContext';
 
 /**
  * Sidebar Component - Desktop only navigation
@@ -22,43 +17,20 @@ import { cn, focusRing } from '../utils/cn';
 const Sidebar = ({
     onNavigate = () => { },
     currentPath = '/',
-    user = { role: 'admin' },
     className = '',
     ...props
 }) => {
-    // Simplified navigation items
-    const navItems = [
-        {
-            icon: Home,
-            label: 'Dashboard',
-            path: '/',
-            roles: ['admin', 'manager', 'operator', 'viewer']
-        },
-        {
-            icon: Activity,
-            label: 'Production',
-            path: '/production',
-            badge: 'Live',
-            roles: ['admin', 'manager', 'operator']
-        },
-        {
-            icon: Package,
-            label: 'Inventory',
-            path: '/inventory',
-            roles: ['admin', 'manager', 'operator']
-        },
-        {
-            icon: Shield,
-            label: 'User Management',
-            path: '/admin/users',
-            roles: ['admin']
-        }
-    ];
+    const { navigationItems } = useSidebarContext();
 
-    // Filter navigation items by user role
-    const filteredNavItems = navItems.filter(item =>
-        user && item.roles.includes(user.role)
-    );
+    const iconMap = {
+        Home,
+        Activity,
+        Package,
+        Shield,
+        CheckCircle,
+        Wrench,
+        BarChart3
+    };
 
     // Handle navigation
     const handleNavigate = (path) => {
@@ -79,8 +51,8 @@ const Sidebar = ({
         >
             {/* Navigation Menu */}
             <nav className="p-4 space-y-2 flex-1 overflow-y-auto">
-                {filteredNavItems.map((item) => {
-                    const Icon = item.icon;
+                {navigationItems.map((item) => {
+                    const Icon = iconMap[item.icon] || Home;
                     const isActive = currentPath === item.path ||
                         (item.path !== '/' && currentPath.startsWith(item.path + '/'));
 

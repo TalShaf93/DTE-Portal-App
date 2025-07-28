@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
     Menu,
     Bell,
@@ -18,6 +18,8 @@ import {
 import Logo, { LogoVariants } from './Logo';
 import { cn, focusRing } from '../utils/cn';
 import { ROUTES, USER_ROLES } from '../constants';
+import { useTopbarContext } from '../hooks/topbar/useTopbarContext';
+import { useAuth } from '../auth/useAuth';
 
 /**
  * TopBar Component - Header with mobile navigation dropdown
@@ -32,7 +34,6 @@ import { ROUTES, USER_ROLES } from '../constants';
  */
 
 const TopBar = ({
-    user = { name: 'Tal Shafir', email: 'tal@dantech-energy.com', role: 'admin' },
     onLogout = () => { },
     onNavigate = () => { },
     currentPath = '/',
@@ -40,46 +41,23 @@ const TopBar = ({
     ...props
 }) => {
 
-    // State management
-    const [showUserDropdown, setShowUserDropdown] = useState(false);
-    const [showNotifications, setShowNotifications] = useState(false);
-    const [showSearch, setShowSearch] = useState(false);
-    const [showMobileMenu, setShowMobileMenu] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [notifications] = useState([
-        { id: 1, title: 'Production Alert', message: 'Line A efficiency dropped to 89%', type: 'warning', time: '5m ago', read: false },
-        { id: 2, title: 'Maintenance Scheduled', message: 'Line B maintenance tomorrow 9:00 AM', type: 'info', time: '1h ago', read: false },
-        { id: 3, title: 'Quality Check Complete', message: 'Batch #2024-001 passed all tests', type: 'success', time: '2h ago', read: true }
-    ]);
+    const { user } = useAuth();
 
-    // Mobile navigation items
-    const mobileNavItems = [
-        {
-            icon: Home,
-            label: 'Dashboard',
-            path: '/',
-            roles: ['admin', 'manager', 'operator', 'viewer']
-        },
-        {
-            icon: Activity,
-            label: 'Production',
-            path: '/production',
-            badge: 'Live',
-            roles: ['admin', 'manager', 'operator']
-        },
-        {
-            icon: Package,
-            label: 'Inventory',
-            path: '/inventory',
-            roles: ['admin', 'manager', 'operator']
-        },
-        {
-            icon: Shield,
-            label: 'User Management',
-            path: '/admin/users',
-            roles: ['admin']
-        }
-    ].filter(item => user && item.roles.includes(user.role));
+    const {
+        showUserDropdown,
+        setShowUserDropdown,
+        showNotifications,
+        setShowNotifications,
+        showSearch,
+        setShowSearch,
+        showMobileMenu,
+        setShowMobileMenu,
+        searchQuery,
+        setSearchQuery,
+        mobileNavItems,
+        notifications,
+        unreadNotificationsCount
+    } = useTopbarContext();
 
     // Get current page info
     const currentPage = mobileNavItems.find(item =>
@@ -149,9 +127,6 @@ const TopBar = ({
             .toUpperCase()
             .slice(0, 2);
     };
-
-    // Get notification badge count
-    const unreadNotificationsCount = notifications.filter(n => !n.read).length;
 
     return (
         <header
