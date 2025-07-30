@@ -10,3 +10,7 @@ Currently, two official plugins are available:
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## Development login bypass
+
+Set the environment variable `VITE_AUTH_BYPASS=true` to bypass the API-based authentication during local development. When enabled, you can sign in with username `admin` and password `12345` without the backend running.
