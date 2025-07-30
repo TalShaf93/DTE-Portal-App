@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
 import api from "../api/users";
+
 import { API_ENDPOINTS, AUTH_STORAGE_KEYS, FEATURES } from "../constants";
 
 export const AuthProvider = ({ children }) => {
@@ -36,10 +37,15 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (username, password) => {
         setLoading(true);
+
         if (FEATURES.AUTH_BYPASS) {
             const userNameClean = (username || '').trim().toLowerCase();
             const passClean = (password || '').trim();
             const ok = userNameClean === 'admin' && passClean === '12345';
+
+
+        if (FEATURES.AUTH_BYPASS) {
+            const ok = username === 'admin' && password === '12345';
             if (!ok) {
                 setLoading(false);
                 throw new Error('Invalid credentials');
@@ -55,12 +61,14 @@ export const AuthProvider = ({ children }) => {
             setLoading(false);
             return;
         }
+
         const { user: loggedIn } = await api.post(API_ENDPOINTS.AUTH.LOGIN, { username, password });
         setUser(loggedIn);
         setLoading(false);
     };
 
     const logout = async () => {
+
         if (FEATURES.AUTH_BYPASS) {
             localStorage.removeItem(AUTH_STORAGE_KEYS.USER);
             setUser(null);
