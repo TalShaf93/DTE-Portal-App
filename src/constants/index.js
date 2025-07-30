@@ -28,6 +28,7 @@ export const USER_ROLES = {
   ADMIN: 'admin',
   MANAGER: 'manager',
   OPERATOR: 'operator',
+  PWORKER: 'pworker',
   VIEWER: 'viewer'
 };
 
@@ -55,6 +56,9 @@ export const ROLE_PERMISSIONS = {
     'analytics.basic',
     'inventory.update'
   ],
+  [USER_ROLES.PWORKER]: [
+    'production.worker'
+  ],
   [USER_ROLES.VIEWER]: [
     'analytics.basic',
     'reports.view',
@@ -77,6 +81,7 @@ export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
   DASHBOARD: '/dashboard',
+  WORKER: '/worker',
   
   // Production
   PRODUCTION: '/production',
@@ -243,6 +248,16 @@ export const PRODUCTION_LINES = {
   QUALITY_CONTROL: 'quality_control',
   PACKAGING: 'packaging'
 };
+
+export const PRODUCTION_STATIONS = {
+  INITIAL_ASSEMBLY: 'Initial Assembly',
+  WELDING: 'Welding',
+  SOLDERING: 'Soldering',
+  FIRMWARE_VALIDATION: 'Firmware & Validation',
+  FINAL_ASSEMBLY: 'Final Assembly'
+};
+
+export const STATION_STORAGE_KEY = 'dantech_last_station';
 
 export const WORKSPACES = [
   {
@@ -461,6 +476,8 @@ export default {
   PRODUCTION_STATUS,
   WORKSPACES,
   STATUS_TYPES,
+  PRODUCTION_STATIONS,
+  STATION_STORAGE_KEY,
   API_ENDPOINTS,
   THEME_CONFIG,
   ERROR_MESSAGES,

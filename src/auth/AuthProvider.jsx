@@ -68,18 +68,27 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
 
     if (FEATURES.AUTH_BYPASS) {
-      const ok =
-        username.trim().toLowerCase() === 'admin' && password.trim() === '12345';
-      if (!ok) {
+      let bypassUser = null;
+      const u = username.trim().toLowerCase();
+      if (u === 'admin' && password.trim() === '12345') {
+        bypassUser = {
+          id: 'local-admin',
+          username: 'admin',
+          full_name: 'Admin User',
+          role: 'admin',
+        };
+      } else if (u === 'pworker' && password.trim() === 'worker') {
+        bypassUser = {
+          id: 'local-pworker',
+          username: 'pworker',
+          full_name: 'Production Worker',
+          role: 'pworker',
+        };
+      }
+      if (!bypassUser) {
         setLoading(false);
         throw new Error('Invalid credentials');
       }
-      const bypassUser = {
-        id: 'local-admin',
-        username: 'admin',
-        full_name: 'Admin User',
-        role: 'admin',
-      };
       setUser(bypassUser);
       saveBypassUser(bypassUser);
       setLoading(false);

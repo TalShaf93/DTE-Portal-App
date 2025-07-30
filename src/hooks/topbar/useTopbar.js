@@ -21,6 +21,7 @@ export const useTopbar = () => {
       { icon: Home, label: 'Dashboard', path: '/', roles: ['admin', 'manager', 'operator', 'viewer'] },
       { icon: Activity, label: 'Production', path: '/production', badge: 'Live', roles: ['admin', 'manager', 'operator'] },
       { icon: Package, label: 'Inventory', path: '/inventory', roles: ['admin', 'manager', 'operator'] },
+      { icon: Activity, label: 'Worker', path: '/worker', roles: ['pworker'] },
       { icon: Shield, label: 'User Management', path: '/admin/users', roles: ['admin'] }
     ];
     return user ? items.filter(item => item.roles.includes(user.role)) : [];
