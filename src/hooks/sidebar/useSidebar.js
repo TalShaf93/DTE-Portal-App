@@ -101,6 +101,14 @@ export const useSidebar = ({
         badge: null
       },
       {
+        id: 'worker',
+        label: 'Worker',
+        path: '/worker',
+        icon: 'Activity',
+        roles: ['pworker'],
+        badge: null
+      },
+      {
         id: 'quality',
         label: 'Quality Control',
         path: '/quality',
