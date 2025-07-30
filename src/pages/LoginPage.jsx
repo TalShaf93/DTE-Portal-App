@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from "../auth/useAuth";
-import Logo from "../components/Logo";
+import Logo, { LogoVariants } from "../components/Logo";
 
 export default function LoginPage() {
     const { user, login, loading: authLoading } = useAuth();
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -40,8 +41,14 @@ export default function LoginPage() {
                 onSubmit={handleSubmit}
                 className="bg-white/90 backdrop-blur-sm p-8 rounded-lg shadow-xl w-80 space-y-4"
             >
-                <div className="flex flex-col items-center gap-2 mb-2">
-                    <Logo className="w-10 h-10" />
+                <div className="flex flex-col items-center gap-3 mb-2">
+                    <LogoVariants.Login />
+                    <div className="text-center">
+                        <div className="text-xl font-bold text-brand-349 tracking-tight">
+                            <span className="font-bold">Dan-Tech</span>
+                            <span className="font-normal ml-1 text-brand-gray">Portal</span>
+                        </div>
+                    </div>
                     <h1 className="text-xl font-semibold text-brand-349">Sign In</h1>
                 </div>
 
