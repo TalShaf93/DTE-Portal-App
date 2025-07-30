@@ -1,89 +1,124 @@
+
 import React, { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
 import api from "../api/users";
 
 import { API_ENDPOINTS, AUTH_STORAGE_KEYS, FEATURES } from "../constants";
 
+
+/**
+ * AuthProvider handles user authentication state.
+ * It loads the current user on mount and exposes
+ * login and logout helpers to child components.
+ */
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
 
-    const fetchCurrentUser = async () => {
-        if (FEATURES.AUTH_BYPASS) {
-            const stored = localStorage.getItem(AUTH_STORAGE_KEYS.USER);
-            if (stored) {
-                try {
-                    setUser(JSON.parse(stored));
-                } catch {
-                    setUser(null);
-                }
-            }
-            setLoading(false);
-            return;
-        }
-        try {
-            const data = await api.get(API_ENDPOINTS.AUTH.CURRENT_USER);
-            setUser(data);
-        } catch {
-            setUser(null);
-        } finally {
-            setLoading(false);
-        }
-    };
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchCurrentUser();
-    }, []);
+  // ------------------------------------------------------------------
+  // Helpers
+  // ------------------------------------------------------------------
 
-    const login = async (username, password) => {
-        setLoading(true);
+  const loadBypassUser = () => {
+    const data = localStorage.getItem(AUTH_STORAGE_KEYS.USER);
+    if (!data) return null;
+    try {
+      return JSON.parse(data);
+    } catch {
+      return null;
+    }
+  };
 
-        if (FEATURES.AUTH_BYPASS) {
-            const userNameClean = (username || '').trim().toLowerCase();
-            const passClean = (password || '').trim();
-            const ok = userNameClean === 'admin' && passClean === '12345';
+  const saveBypassUser = (data) => {
+    localStorage.setItem(AUTH_STORAGE_KEYS.USER, JSON.stringify(data));
+  };
 
+  const clearBypassUser = () => {
+    localStorage.removeItem(AUTH_STORAGE_KEYS.USER);
+  };
 
-        if (FEATURES.AUTH_BYPASS) {
-            const ok = username === 'admin' && password === '12345';
-            if (!ok) {
-                setLoading(false);
-                throw new Error('Invalid credentials');
-            }
-            const bypassUser = {
-                id: 'local-admin',
-                username: 'admin',
-                full_name: 'Admin User',
-                role: 'admin'
-            };
-            setUser(bypassUser);
-            localStorage.setItem(AUTH_STORAGE_KEYS.USER, JSON.stringify(bypassUser));
-            setLoading(false);
-            return;
-        }
-
-        const { user: loggedIn } = await api.post(API_ENDPOINTS.AUTH.LOGIN, { username, password });
-        setUser(loggedIn);
+  // ------------------------------------------------------------------
+  // Fetch current user on mount
+  // ------------------------------------------------------------------
+  useEffect(() => {
+    const init = async () => {
+      if (FEATURES.AUTH_BYPASS) {
+        const stored = loadBypassUser();
+        if (stored) setUser(stored);
         setLoading(false);
+        return;
+      }
+      try {
+        const data = await api.get(API_ENDPOINTS.AUTH.CURRENT_USER);
+        setUser(data);
+      } catch {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+
     };
+    init();
+  }, []);
 
-    const logout = async () => {
+  // ------------------------------------------------------------------
+  // Login
+  // ------------------------------------------------------------------
+  const login = async (username, password) => {
+    setLoading(true);
 
-        if (FEATURES.AUTH_BYPASS) {
-            localStorage.removeItem(AUTH_STORAGE_KEYS.USER);
-            setUser(null);
-            return;
-        }
-        try {
-            await api.post(API_ENDPOINTS.AUTH.LOGOUT);
-        } finally {
-            setUser(null);
-        }
-    };
+    if (FEATURES.AUTH_BYPASS) {
+      const ok =
+        username.trim().toLowerCase() === 'admin' && password.trim() === '12345';
+      if (!ok) {
+        setLoading(false);
+        throw new Error('Invalid credentials');
+      }
+      const bypassUser = {
+        id: 'local-admin',
+        username: 'admin',
+        full_name: 'Admin User',
+        role: 'admin',
+      };
+      setUser(bypassUser);
+      saveBypassUser(bypassUser);
+      setLoading(false);
+      return;
+    }
 
-    return (
-        <AuthContext.Provider value={{ user, loading, login, logout }}>
-            {children}
-        </AuthContext.Provider>
-    );
+    const { token, user: loggedIn } = await api.post(API_ENDPOINTS.AUTH.LOGIN, {
+      username,
+      password,
+    });
+
+    if (token) {
+      localStorage.setItem(AUTH_STORAGE_KEYS.TOKEN, token);
+    }
+
+    setUser(loggedIn);
+    setLoading(false);
+  };
+
+  // ------------------------------------------------------------------
+  // Logout
+  // ------------------------------------------------------------------
+  const logout = async () => {
+    if (FEATURES.AUTH_BYPASS) {
+      clearBypassUser();
+      setUser(null);
+      return;
+    }
+
+    try {
+      await api.post(API_ENDPOINTS.AUTH.LOGOUT);
+    } finally {
+      localStorage.removeItem(AUTH_STORAGE_KEYS.TOKEN);
+      setUser(null);
+    }
+  };
+
+  const value = { user, loading, login, logout };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

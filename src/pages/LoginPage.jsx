@@ -5,12 +5,21 @@ import { useAuth } from "../auth/useAuth";
 import Logo, { LogoVariants } from "../components/Logo";
 
 export default function LoginPage() {
-    const { user, login } = useAuth();
+    const { user, login, loading: authLoading } = useAuth();
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    if (authLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen p-6">
+                <Loader2 className="animate-spin text-brand-349" />
+            </div>
+        );
+    }
 
     if (user) return <Navigate to="/" replace />;
 
