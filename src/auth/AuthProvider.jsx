@@ -1,7 +1,9 @@
+
 import React, { useEffect, useState } from 'react';
 import { AuthContext } from './AuthContext';
 import api from '../api/users';
 import { API_ENDPOINTS, AUTH_STORAGE_KEYS, FEATURES } from '../constants';
+
 
 /**
  * AuthProvider handles user authentication state.
@@ -9,6 +11,7 @@ import { API_ENDPOINTS, AUTH_STORAGE_KEYS, FEATURES } from '../constants';
  * login and logout helpers to child components.
  */
 export const AuthProvider = ({ children }) => {
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -53,6 +56,7 @@ export const AuthProvider = ({ children }) => {
       } finally {
         setLoading(false);
       }
+
     };
     init();
   }, []);
@@ -99,6 +103,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
+
   };
 
   // ------------------------------------------------------------------

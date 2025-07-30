@@ -207,7 +207,7 @@ const LogoVariants = {
         <Logo
             variant="gradient"
             size="lg"
-            showText={true}
+            showText={false}
             responsive={true}
             {...props}
         />
