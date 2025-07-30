@@ -5,12 +5,20 @@ import { useAuth } from "../auth/useAuth";
 import Logo from "../components/Logo";
 
 export default function LoginPage() {
-    const { user, login } = useAuth();
-    const [email, setEmail] = useState("");
+    const { user, login, loading: authLoading } = useAuth();
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    if (authLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen p-6">
+                <Loader2 className="animate-spin text-brand-349" />
+            </div>
+        );
+    }
 
     if (user) return <Navigate to="/" replace />;
 
@@ -19,9 +27,9 @@ export default function LoginPage() {
         setLoading(true);
         setError(null);
         try {
-            await login(email, password);
+            await login(username, password);
         } catch (err) {
-            setError("Invalid credentials");
+            setError(err.message || "Invalid credentials");
             setLoading(false);
         }
     };
@@ -39,11 +47,11 @@ export default function LoginPage() {
 
                 <div className="space-y-4">
                     <input
-                        type="email"
+                        type="text"
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-361/40 focus:border-brand-361 transition-colors"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                         disabled={loading}
                         required
                     />
