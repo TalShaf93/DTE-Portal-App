@@ -1,9 +1,8 @@
 
-import React, { useState, useEffect } from "react";
-import { AuthContext } from "./AuthContext";
-import api from "../api/users";
-
-import { API_ENDPOINTS, AUTH_STORAGE_KEYS, FEATURES } from "../constants";
+import React, { useEffect, useState } from 'react';
+import { AuthContext } from './AuthContext';
+import api from '../api/users';
+import { API_ENDPOINTS, AUTH_STORAGE_KEYS, FEATURES } from '../constants';
 
 
 /**
@@ -87,17 +86,24 @@ export const AuthProvider = ({ children }) => {
       return;
     }
 
-    const { token, user: loggedIn } = await api.post(API_ENDPOINTS.AUTH.LOGIN, {
-      username,
-      password,
-    });
+    try {
+      const { token, user: loggedIn } = await api.post(
+        API_ENDPOINTS.AUTH.LOGIN,
+        {
+          username,
+          password,
+        },
+      );
 
-    if (token) {
-      localStorage.setItem(AUTH_STORAGE_KEYS.TOKEN, token);
+      if (token) {
+        localStorage.setItem(AUTH_STORAGE_KEYS.TOKEN, token);
+      }
+
+      setUser(loggedIn);
+    } finally {
+      setLoading(false);
     }
 
-    setUser(loggedIn);
-    setLoading(false);
   };
 
   // ------------------------------------------------------------------
