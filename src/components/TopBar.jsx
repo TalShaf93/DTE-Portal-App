@@ -119,8 +119,9 @@ const TopBar = ({
 
     // Get user initials for avatar
     const getUserInitials = () => {
-        if (!user?.name) return 'U';
-        return user.name
+        if (user?.avatar_initials) return user.avatar_initials;
+        if (!user?.full_name) return 'U';
+        return user.full_name
             .split(' ')
             .map(n => n[0])
             .join('')
@@ -360,8 +361,8 @@ const TopBar = ({
 
                                 {/* User Info */}
                                 <div className="px-4 py-3 border-b border-gray-100 bg-brand-gradient bg-opacity-5">
-                                    <div className="font-medium text-brand-349">{user?.name || 'User'}</div>
-                                    <div className="text-sm text-gray-500">{user?.email}</div>
+                                    <div className="font-medium text-brand-349">{user?.full_name || 'User'}</div>
+                                    <div className="text-sm text-gray-500">{user?.username}</div>
                                     <div className="text-xs text-brand-361 font-medium mt-1 capitalize">
                                         {user?.role} Access
                                     </div>
