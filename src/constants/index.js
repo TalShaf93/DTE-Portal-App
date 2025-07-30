@@ -313,45 +313,43 @@ export const PRIORITY_LEVELS = {
 // =====================================================
 
 export const API_ENDPOINTS = {
-  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:3001/api',
-  
+  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+
   // Authentication
   AUTH: {
-    LOGIN: '/auth/login',
-    LOGOUT: '/auth/logout',
-    REFRESH: '/auth/refresh',
-    PROFILE: '/auth/profile'
+    LOGIN: '/login',
+    LOGOUT: '/logout',
+    CURRENT_USER: '/current-user'
   },
-  
-  // Production
-  PRODUCTION: {
-    LINES: '/production/lines',
-    ORDERS: '/production/orders',
-    METRICS: '/production/metrics',
-    STATUS: '/production/status'
+
+  // Projects & dashboard
+  PROJECTS: '/projects',
+  PROJECT_SUBITEMS: (id) => `/project/${id}/subitems`,
+  SUBITEM_ASSETS: (projectId, subitemId) =>
+    `/project/${projectId}/subitem/${subitemId}/assets`,
+
+  // Workflow
+  SCAN_BATTERY: '/scan-battery',
+  STATION_CHECKLIST: (station) => `/station/${station}/checklist`,
+  COMPLETE_STATION: '/complete-station',
+
+  // Failures & files
+  REPORT_FAILURE: '/report-failure',
+  UPLOAD_FILE: '/upload-file',
+
+  // Admin
+  ADMIN: {
+    USERS: '/admin/users',
+    USER: (id) => `/admin/users/${id}`,
+    IMPERSONATE: (id) => `/admin/impersonate/${id}`,
+    STOP_IMPERSONATION: '/admin/stop-impersonation',
+    ANALYTICS: '/admin/analytics',
+    RELOAD_USERS: '/admin/reload-users'
   },
-  
-  // Analytics
-  ANALYTICS: {
-    PERFORMANCE: '/analytics/performance',
-    EFFICIENCY: '/analytics/efficiency',
-    ENERGY: '/analytics/energy'
-  },
-  
-  // Users & Admin
-  USERS: {
-    LIST: '/users',
-    CREATE: '/users',
-    UPDATE: '/users/:id',
-    DELETE: '/users/:id'
-  },
-  
+
   // System
-  SYSTEM: {
-    HEALTH: '/system/health',
-    BACKUP: '/system/backup',
-    LOGS: '/system/logs'
-  }
+  HEALTH: '/health',
+  CLEAR_CACHE: '/system/cache/clear'
 };
 
 export const REQUEST_TIMEOUT = 30000; // 30 seconds
@@ -446,7 +444,8 @@ export const FEATURES = {
   DARK_MODE: import.meta.env.VITE_FEATURE_DARK_MODE === 'true',
   ANALYTICS_EXPORT: import.meta.env.VITE_FEATURE_ANALYTICS_EXPORT === 'true',
   REAL_TIME_NOTIFICATIONS: import.meta.env.VITE_FEATURE_REAL_TIME === 'true',
-  ADVANCED_REPORTING: import.meta.env.VITE_FEATURE_ADVANCED_REPORTS === 'true'
+  ADVANCED_REPORTING: import.meta.env.VITE_FEATURE_ADVANCED_REPORTS === 'true',
+  AUTH_BYPASS: import.meta.env.VITE_AUTH_BYPASS === 'true'
 };
 
 // =====================================================
