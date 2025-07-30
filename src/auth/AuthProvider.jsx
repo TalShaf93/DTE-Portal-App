@@ -4,7 +4,6 @@ import api from "../api/users";
 
 import { API_ENDPOINTS, AUTH_STORAGE_KEYS, FEATURES } from "../constants";
 
-
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -38,6 +37,12 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (username, password) => {
         setLoading(true);
+
+        if (FEATURES.AUTH_BYPASS) {
+            const userNameClean = (username || '').trim().toLowerCase();
+            const passClean = (password || '').trim();
+            const ok = userNameClean === 'admin' && passClean === '12345';
+
 
         if (FEATURES.AUTH_BYPASS) {
             const ok = username === 'admin' && password === '12345';
