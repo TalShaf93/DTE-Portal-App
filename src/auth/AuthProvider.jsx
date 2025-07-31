@@ -96,17 +96,13 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
-      const { token, user: loggedIn } = await api.post(
+      const { user: loggedIn } = await api.post(
         API_ENDPOINTS.AUTH.LOGIN,
         {
           username,
           password,
         },
       );
-
-      if (token) {
-        localStorage.setItem(AUTH_STORAGE_KEYS.TOKEN, token);
-      }
 
       setUser(loggedIn);
     } finally {
@@ -128,7 +124,6 @@ export const AuthProvider = ({ children }) => {
     try {
       await api.post(API_ENDPOINTS.AUTH.LOGOUT);
     } finally {
-      localStorage.removeItem(AUTH_STORAGE_KEYS.TOKEN);
       setUser(null);
     }
   };

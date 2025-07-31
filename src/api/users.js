@@ -1,5 +1,5 @@
 
-import { API_ENDPOINTS, AUTH_STORAGE_KEYS } from '../constants';
+import { API_ENDPOINTS } from '../constants';
 
 
 const BASE_URL = API_ENDPOINTS.BASE_URL;
@@ -7,9 +7,6 @@ const BASE_URL = API_ENDPOINTS.BASE_URL;
 async function request(path, options = {}) {
   const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
 
-  const token = localStorage.getItem(AUTH_STORAGE_KEYS.TOKEN);
-
-  if (token) headers['Authorization'] = `Bearer ${token}`;
 
   const res = await fetch(`${BASE_URL}${path}`, {
     credentials: 'include',
