@@ -1,8 +1,32 @@
 const sampleProjects = [
-  { id: '8985338442', name: 'Skylotec Rework-General .2,', productID: '' },
-  { id: '9631570013', name: 'Skylotec 810 TN15S2P-50S-01 .6.', productID: '5507872717' },
-  { id: '9410466104', name: 'UFORM 1100 PCS', productID: '3934899671' },
-  { id: '9300831255', name: 'E4 DE TN2S2P-29M .2.', productID: '3944049148' }
+  {
+    id: '8985338442',
+    name: 'Skylotec Rework-General .2,',
+    productID: '',
+    productName: 'General Rework',
+    numOfItems: 120,
+  },
+  {
+    id: '9631570013',
+    name: 'Skylotec 810 TN15S2P-50S-01 .6.',
+    productID: '5507872717',
+    productName: 'TN15S2P-50S-01',
+    numOfItems: 50,
+  },
+  {
+    id: '9410466104',
+    name: 'UFORM 1100 PCS',
+    productID: '3934899671',
+    productName: 'UFORM',
+    numOfItems: 1100,
+  },
+  {
+    id: '9300831255',
+    name: 'E4 DE TN2S2P-29M .2.',
+    productID: '3944049148',
+    productName: 'TN2S2P-29M',
+    numOfItems: 80,
+  },
 ];
 
 
