@@ -328,7 +328,7 @@ export const PRIORITY_LEVELS = {
 // =====================================================
 
 export const API_ENDPOINTS = {
-  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  BASE_URL: import.meta.env.VITE_API_URL || 'http://192.168.10.15:5000/api',
 
   // Authentication
   AUTH: {
