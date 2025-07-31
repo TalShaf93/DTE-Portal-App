@@ -8,7 +8,7 @@ import {
 import * as Select from '@radix-ui/react-select';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import { ChevronDown, Check } from 'lucide-react';
-import { Table } from '@radix-ui/themes';
+import { Table, Card, Flex, Box, Text } from '@radix-ui/themes';
 
 import { useSearchParams } from 'react-router-dom';
 
@@ -61,12 +61,12 @@ export default function WorkerPage() {
     return (
       <div className="space-y-4">
         <h2 className="text-brand-349 text-xl font-semibold">Select Project</h2>
-        <Table.Root className="border rounded-lg w-full">
-          <Table.Header>
+        <Table.Root className="border rounded-lg w-full max-w-md text-sm">
+          <Table.Header className="bg-gray-100">
             <Table.Row>
-              <Table.ColumnHeaderCell>Name</Table.ColumnHeaderCell>
-              <Table.ColumnHeaderCell>Product</Table.ColumnHeaderCell>
-              <Table.ColumnHeaderCell>Quantity</Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell className="text-left">Name</Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell className="text-left">Product</Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell className="text-center">Quantity</Table.ColumnHeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -74,11 +74,11 @@ export default function WorkerPage() {
               <Table.Row
                 key={p.id}
                 onClick={() => setProject(p.id)}
-                className="cursor-pointer hover:bg-gray-100"
+                className="cursor-pointer hover:bg-gray-50"
               >
-                <Table.RowHeaderCell>{p.name}</Table.RowHeaderCell>
-                <Table.Cell>{p.productName}</Table.Cell>
-                <Table.Cell>{p.numOfItems}</Table.Cell>
+                <Table.RowHeaderCell className="text-left">{p.name}</Table.RowHeaderCell>
+                <Table.Cell className="text-left">{p.productName}</Table.Cell>
+                <Table.Cell className="text-center">{p.numOfItems}</Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>
@@ -94,7 +94,7 @@ export default function WorkerPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={() => setProject('')}
@@ -102,7 +102,20 @@ export default function WorkerPage() {
         >
           Change
         </button>
-        <div className="font-medium">{projectData?.name}</div>
+        <Box maxWidth="240px">
+          <Card>
+            <Flex gap="3" align="center">
+              <Box>
+                <Text as="div" size="2" weight="bold">
+                  {projectData?.name}
+                </Text>
+                <Text as="div" size="2" color="gray">
+                  {projectData?.productName} - {projectData?.numOfItems}
+                </Text>
+              </Box>
+            </Flex>
+          </Card>
+        </Box>
       </div>
       <h2 className="text-brand-349 text-xl font-semibold">Scan Item</h2>
       <input
