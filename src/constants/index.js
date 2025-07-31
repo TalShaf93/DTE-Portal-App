@@ -460,7 +460,7 @@ export const FEATURES = {
   ANALYTICS_EXPORT: import.meta.env.VITE_FEATURE_ANALYTICS_EXPORT === 'true',
   REAL_TIME_NOTIFICATIONS: import.meta.env.VITE_FEATURE_REAL_TIME === 'true',
   ADVANCED_REPORTING: import.meta.env.VITE_FEATURE_ADVANCED_REPORTS === 'true',
-  AUTH_BYPASS: import.meta.env.VITE_AUTH_BYPASS === 'true'
+  AUTH_BYPASS: import.meta.env.VITE_AUTH_BYPASS === 'false'
 };
 
 // =====================================================
