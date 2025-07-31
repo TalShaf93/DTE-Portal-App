@@ -1,6 +1,8 @@
 import React from 'react';
 import TopBar from '../components/TopBar';
+import Sidebar from '../components/Sidebar';
 import { cn } from '../utils/cn';
+import { SidebarProvider } from '../hooks/sidebar/SidebarProvider';
 import { TopbarProvider } from '../hooks/topbar/TopbarProvider';
 import { useAuth } from '../auth/useAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -19,14 +21,24 @@ const WorkerLayout = ({ children, className = '', ...props }) => {
   return (
     <div className={cn('min-h-screen bg-gray-50', className)} {...props}>
       <TopbarProvider>
-        <TopBar
-          onLogout={handleLogout}
-          onNavigate={handleNavigate}
-          currentPath={pathname}
-        />
-        <main className="pt-[73px]">
-          <div className="p-6 max-w-4xl mx-auto">{children}</div>
-        </main>
+        <SidebarProvider>
+          <TopBar
+            onLogout={handleLogout}
+            onNavigate={handleNavigate}
+            currentPath={pathname}
+          />
+          <Sidebar onNavigate={handleNavigate} currentPath={pathname} />
+
+          <main
+            className={cn(
+              'transition-all duration-300',
+              'min-h-[calc(100vh-73px)]',
+              'lg:ml-64'
+            )}
+          >
+            <div className="p-6 max-w-4xl mx-auto">{children}</div>
+          </main>
+        </SidebarProvider>
       </TopbarProvider>
     </div>
   );
