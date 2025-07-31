@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { STATION_STORAGE_KEY } from '../../constants';
 import {
-  sampleProjects,
+  Projects,
   itemStatus,
   productInfo,
 } from './dummyData';
 import * as Select from '@radix-ui/react-select';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import { ChevronDown, Check } from 'lucide-react';
-import { Table, Card, Flex, Box, Text } from '@radix-ui/themes';
+import { Table, Card, Box, DataList, Button } from '@radix-ui/themes';
 
 import { useSearchParams } from 'react-router-dom';
 
@@ -61,7 +61,7 @@ export default function WorkerPage() {
     return (
       <div className="space-y-4">
         <h2 className="text-brand-349 text-xl font-semibold">Select Project</h2>
-        <Table.Root className="border rounded-lg w-full max-w-md text-sm">
+        <Table.Root maxWidth="580px" variant="surface" >
           <Table.Header className="bg-gray-100">
             <Table.Row>
               <Table.ColumnHeaderCell className="text-left">Name</Table.ColumnHeaderCell>
@@ -70,7 +70,7 @@ export default function WorkerPage() {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {sampleProjects.map((p) => (
+            {Projects.map((p) => (
               <Table.Row
                 key={p.id}
                 onClick={() => setProject(p.id)}
@@ -87,36 +87,71 @@ export default function WorkerPage() {
     );
   }
 
-  const projectData = sampleProjects.find((p) => p.id === project);
+  const projectData = Projects.find((p) => p.id === project);
 
   const toggleCheck = (idx) =>
     setChecks((c) => c.map((chk, i) => (i === idx ? { ...chk, checked: !chk.checked } : chk)));
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <Box maxWidth="240px" className=''>
+      <div className="flex items-start justify-between gap-3">
+
+        <Box className=''>
           <Card>
-            <Flex gap="3" align="center">
-              <Box>
-                <Text as="div" size="2" weight="bold">
-                  {projectData?.name}
-                </Text>
-                <Text as="div" size="2" color="gray">
-                  {projectData?.productName} - {projectData?.numOfItems}
-                </Text>
-              </Box>
-            </Flex>
+            <DataList.Root orientation={{ initial: "vertical", sm: "horizontal" }}>
+              <DataList.Item>
+                <DataList.Label minWidth="88px">Project Name</DataList.Label>
+                <DataList.Value>{projectData?.name}</DataList.Value>
+              </DataList.Item>
+              <DataList.Item>
+                <DataList.Label minWidth="88px">Product</DataList.Label>
+                <DataList.Value>
+                  {projectData?.productName}
+                </DataList.Value>
+              </DataList.Item>
+              <DataList.Item>
+                <DataList.Label minWidth="88px">Quantity</DataList.Label>
+                <DataList.Value>
+
+                  {projectData?.numOfItems} units
+
+                </DataList.Value>
+              </DataList.Item>
+            </DataList.Root>
+          </Card>
+          <Button color='green' varient='soft' size='2'
+            onClick={() => setProject('')}
+          >
+            Change
+          </Button>
+        </Box>
+
+        <Box className=''>
+          <Card>
+            <DataList.Root orientation={{ initial: "vertical", sm: "horizontal" }}>
+              <DataList.Item>
+                <DataList.Label minWidth="88px">Project Name</DataList.Label>
+                <DataList.Value>{projectData?.name}</DataList.Value>
+              </DataList.Item>
+              <DataList.Item>
+                <DataList.Label minWidth="88px">Product</DataList.Label>
+                <DataList.Value>
+                  {projectData?.productName}
+                </DataList.Value>
+              </DataList.Item>
+              <DataList.Item>
+                <DataList.Label minWidth="88px">Quantity</DataList.Label>
+                <DataList.Value>
+
+                  {projectData?.numOfItems} units
+
+                </DataList.Value>
+              </DataList.Item>
+            </DataList.Root>
           </Card>
         </Box>
-        <button
-          type="button"
-          onClick={() => setProject('')}
-          className="px-2 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300"
-        >
-          Change
-        </button>
       </div>
+
       <h2 className="text-brand-349 text-xl font-semibold">Scan Item</h2>
       <input
         ref={inputRef}

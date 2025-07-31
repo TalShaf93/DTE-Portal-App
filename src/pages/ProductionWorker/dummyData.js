@@ -1,4 +1,4 @@
-const sampleProjects = [
+const Projects = [
   { id: '8985338442', name: 'Skylotec Rework-General .2,', productID: '', productName: 'TN15S2P-50S-01', numOfItems: 30 },
   { id: '9631570013', name: 'Skylotec 810 TN15S2P-50S-01 .6.', productID: '5507872717', productName: 'TN15S2P-50S-01', numOfItems: 127 },
   { id: '9410466104', name: 'UFORM 1100 PCS', productID: '3934899671', productName: '1S1P U-Form 7mm tabs', numOfItems: 1100 },
@@ -539,7 +539,7 @@ const productInfo = {
       "link": "https://dan-tech-team.monday.com/protected_static/13237311/resources/1892251614/Production%20manual%20Skylotec.pdf"
     },
   ],
-  "checks": [
+  "final assembly": [
     {
       "value": "Vacuum passed"
     },
@@ -570,4 +570,4 @@ const productInfo = {
 
 
 
-export { sampleProjects, projectItems, itemStatus, productInfo };
+export { Projects, projectItems, itemStatus, productInfo };
