@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '../../auth/useAuth';
+import { PRODUCTION_STATIONS } from '../../constants';
 
 /**
  * useSidebar Hook - Manages sidebar state and responsive behavior
@@ -82,7 +83,7 @@ export const useSidebar = ({
         path: '/',
         icon: 'Home',
         roles: ['admin', 'manager', 'operator', 'viewer'],
-        badge: null
+        badge: null,
       },
       {
         id: 'production',
@@ -90,7 +91,7 @@ export const useSidebar = ({
         path: '/production',
         icon: 'Activity',
         roles: ['admin', 'manager', 'operator'],
-        badge: 'Live'
+        badge: 'Live',
       },
       {
         id: 'inventory',
@@ -98,15 +99,7 @@ export const useSidebar = ({
         path: '/inventory',
         icon: 'Package',
         roles: ['admin', 'manager', 'operator'],
-        badge: null
-      },
-      {
-        id: 'worker',
-        label: 'Worker',
-        path: '/worker',
-        icon: 'Activity',
-        roles: ['pworker'],
-        badge: null
+        badge: null,
       },
       {
         id: 'quality',
@@ -114,7 +107,7 @@ export const useSidebar = ({
         path: '/quality',
         icon: 'CheckCircle',
         roles: ['admin', 'manager', 'operator'],
-        badge: null
+        badge: null,
       },
       {
         id: 'maintenance',
@@ -142,8 +135,21 @@ export const useSidebar = ({
       }
     ];
 
-    // Filter items based on user role
-    return user ? baseItems.filter(item => item.roles.includes(user.role)) : [];
+    if (!user) return [];
+
+    if (user.role === 'pworker') {
+      return Object.entries(PRODUCTION_STATIONS).map(([key, label]) => ({
+        id: `station-${key.toLowerCase()}`,
+        label,
+        path: '/worker',
+        icon: 'Activity',
+        roles: ['pworker'],
+        station: label,
+        badge: null,
+      }));
+    }
+
+    return baseItems.filter((item) => item.roles.includes(user.role));
   }, [user]);
 
   // Control functions

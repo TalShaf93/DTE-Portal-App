@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Home, Activity, Package, Shield } from 'lucide-react';
 import { useAuth } from '../../auth/useAuth';
+import { PRODUCTION_STATIONS } from '../../constants';
 
 export const useTopbar = () => {
   const { user } = useAuth();
@@ -21,10 +22,23 @@ export const useTopbar = () => {
       { icon: Home, label: 'Dashboard', path: '/', roles: ['admin', 'manager', 'operator', 'viewer'] },
       { icon: Activity, label: 'Production', path: '/production', badge: 'Live', roles: ['admin', 'manager', 'operator'] },
       { icon: Package, label: 'Inventory', path: '/inventory', roles: ['admin', 'manager', 'operator'] },
-      { icon: Activity, label: 'Worker', path: '/worker', roles: ['pworker'] },
       { icon: Shield, label: 'User Management', path: '/admin/users', roles: ['admin'] }
     ];
-    return user ? items.filter(item => item.roles.includes(user.role)) : [];
+
+    if (!user) return [];
+
+    if (user.role === 'pworker') {
+      return Object.entries(PRODUCTION_STATIONS).map(([key, label]) => ({
+        id: `station-${key.toLowerCase()}`,
+        icon: Activity,
+        label,
+        path: '/worker',
+        roles: ['pworker'],
+        station: label,
+      }));
+    }
+
+    return items.filter(item => item.roles.includes(user.role));
   }, [user]);
 
   const unreadNotificationsCount = useMemo(
