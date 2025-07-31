@@ -17,7 +17,7 @@ import {
 
 import Logo, { LogoVariants } from './Logo';
 import { cn, focusRing } from '../utils/cn';
-import { ROUTES, USER_ROLES } from '../constants';
+import { ROUTES, USER_ROLES, STATION_STORAGE_KEY } from '../constants';
 import { useTopbarContext } from '../hooks/topbar/useTopbarContext';
 import { useAuth } from '../auth/useAuth';
 
@@ -112,7 +112,14 @@ const TopBar = ({
     };
 
     // Handle navigation
-    const handleNavigate = (path) => {
+    const handleNavigate = (itemOrPath) => {
+        const path = typeof itemOrPath === 'string' ? itemOrPath : itemOrPath.path;
+        if (typeof itemOrPath === 'object' && itemOrPath.station) {
+            localStorage.setItem(STATION_STORAGE_KEY, itemOrPath.station);
+            onNavigate(`${path}?station=${encodeURIComponent(itemOrPath.station)}`);
+            setShowMobileMenu(false);
+            return;
+        }
         onNavigate(path);
         setShowMobileMenu(false);
     };
@@ -167,13 +174,15 @@ const TopBar = ({
                             <div className="absolute top-12 left-0 bg-white rounded-xl shadow-xl border border-gray-200 min-w-48 py-2 z-50">
                                 {mobileNavItems.map((item) => {
                                     const Icon = item.icon;
-                                    const isActive = currentPath === item.path ||
-                                        (item.path !== '/' && currentPath.startsWith(item.path + '/'));
+                                    const currentStation = localStorage.getItem(STATION_STORAGE_KEY);
+                                    const isActive = (currentPath === item.path ||
+                                        (item.path !== '/' && currentPath.startsWith(item.path + '/')))
+                                        && (!item.station || item.station === currentStation);
 
                                     return (
                                         <button
-                                            key={item.path}
-                                            onClick={() => handleNavigate(item.path)}
+                                            key={item.station || item.path}
+                                            onClick={() => handleNavigate(item)}
                                             className={cn(
                                                 'w-full flex items-center gap-3 px-4 py-3 text-left transition-colors',
                                                 isActive
