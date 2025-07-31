@@ -5,9 +5,9 @@ import { cn } from '../utils/cn';
 import { SidebarProvider } from '../hooks/sidebar/SidebarProvider';
 import { TopbarProvider } from '../hooks/topbar/TopbarProvider';
 import { useAuth } from '../auth/useAuth';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 
-const WorkerLayout = ({ children, className = '', ...props }) => {
+const WorkerLayout = ({ className = '', ...props }) => {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -36,7 +36,10 @@ const WorkerLayout = ({ children, className = '', ...props }) => {
               'lg:ml-64'
             )}
           >
-            <div className="p-6 max-w-4xl mx-auto">{children}</div>
+            <div className="p-6 max-w-4xl mx-auto">
+              <Outlet />
+            </div>
+
           </main>
         </SidebarProvider>
       </TopbarProvider>
