@@ -128,7 +128,28 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const value = { user, loading, login, logout };
+  // ------------------------------------------------------------------
+  // Refresh user from API
+  // ------------------------------------------------------------------
+  const refreshUser = async () => {
+    setLoading(true);
+
+    if (FEATURES.AUTH_BYPASS) {
+      const stored = loadBypassUser();
+      setUser(stored);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const data = await api.get(API_ENDPOINTS.AUTH.CURRENT_USER);
+      setUser(data);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const value = { user, loading, login, logout, refreshUser, setUser };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

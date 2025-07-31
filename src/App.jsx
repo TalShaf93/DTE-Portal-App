@@ -26,7 +26,7 @@ export default function App() {
 
             {/* Admin‑only subsection */}
             <Route element={<ProtectedRoute roles={["admin"]} />}>
-              <Route path="admin" element={<UsersPage />} />
+              <Route path="admin/users" element={<UsersPage />} />
             </Route>
           </Route>
           <Route element={<ProtectedRoute roles={["pworker"]} />}> 

@@ -12,14 +12,16 @@ import {
     X,
     Home,
     Activity,
-    Package
+    Package,
+    RefreshCcw
 } from 'lucide-react';
 
 import Logo, { LogoVariants } from './Logo';
 import { cn, focusRing } from '../utils/cn';
-import { ROUTES, USER_ROLES, STATION_STORAGE_KEY } from '../constants';
+import { ROUTES, USER_ROLES, STATION_STORAGE_KEY, API_ENDPOINTS } from '../constants';
 import { useTopbarContext } from '../hooks/topbar/useTopbarContext';
 import { useAuth } from '../auth/useAuth';
+import api from '../api/users';
 
 /**
  * TopBar Component - Header with mobile navigation dropdown
@@ -41,7 +43,7 @@ const TopBar = ({
     ...props
 }) => {
 
-    const { user } = useAuth();
+    const { user, refreshUser } = useAuth();
 
     const {
         showUserDropdown,
@@ -99,6 +101,18 @@ const TopBar = ({
             onNavigate(ROUTES.LOGIN);
         } catch (error) {
             console.error('Logout failed:', error);
+        }
+    };
+
+    // Stop impersonation and return to admin view
+    const handleStopImpersonation = async () => {
+        try {
+            await api.post(API_ENDPOINTS.ADMIN.STOP_IMPERSONATION);
+            await refreshUser();
+            setShowUserDropdown(false);
+            onNavigate(ROUTES.ADMIN_USERS);
+        } catch (error) {
+            console.error('Stop impersonation failed:', error);
         }
     };
 
@@ -421,9 +435,19 @@ const TopBar = ({
                                         }}
                                         className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors w-full text-left"
                                     >
-                                        <HelpCircle size={16} />
+                                    <HelpCircle size={16} />
                                         Help & Support
                                     </button>
+
+                                    {user?.role !== USER_ROLES.ADMIN && (
+                                        <button
+                                            onClick={handleStopImpersonation}
+                                            className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors w-full text-left"
+                                        >
+                                            <RefreshCcw size={16} />
+                                            Return to Admin
+                                        </button>
+                                    )}
                                 </div>
 
                                 {/* Logout */}
