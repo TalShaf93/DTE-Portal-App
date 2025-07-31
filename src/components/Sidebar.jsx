@@ -2,6 +2,7 @@ import React from 'react';
 import { Home, Activity, Package, Shield, CheckCircle, Wrench, BarChart3 } from 'lucide-react';
 import { cn, focusRing } from '../utils/cn';
 import { useSidebarContext } from '../hooks/sidebar/useSidebarContext';
+import { STATION_STORAGE_KEY } from '../constants';
 
 /**
  * Sidebar Component - Desktop only navigation
@@ -33,8 +34,13 @@ const Sidebar = ({
     };
 
     // Handle navigation
-    const handleNavigate = (path) => {
-        onNavigate(path);
+    const handleNavigate = (item) => {
+        if (item.station) {
+            localStorage.setItem(STATION_STORAGE_KEY, item.station);
+            onNavigate(`${item.path}?station=${encodeURIComponent(item.station)}`);
+            return;
+        }
+        onNavigate(item.path);
     };
 
     return (
@@ -53,13 +59,15 @@ const Sidebar = ({
             <nav className="p-4 space-y-2 flex-1 overflow-y-auto">
                 {navigationItems.map((item) => {
                     const Icon = iconMap[item.icon] || Home;
-                    const isActive = currentPath === item.path ||
-                        (item.path !== '/' && currentPath.startsWith(item.path + '/'));
+                    const currentStation = localStorage.getItem(STATION_STORAGE_KEY);
+                    const isActive = (currentPath === item.path ||
+                        (item.path !== '/' && currentPath.startsWith(item.path + '/')))
+                        && (!item.station || item.station === currentStation);
 
                     return (
                         <button
-                            key={item.path}
-                            onClick={() => handleNavigate(item.path)}
+                            key={item.id || item.path}
+                            onClick={() => handleNavigate(item)}
                             className={cn(
                                 'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left',
                                 'transition-all duration-200 group relative',

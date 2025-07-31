@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { PRODUCTION_STATIONS, STATION_STORAGE_KEY } from '../../constants';
+import { STATION_STORAGE_KEY } from '../../constants';
 import {
   sampleProjects,
   itemStatus,
@@ -8,8 +8,11 @@ import {
 import * as Select from '@radix-ui/react-select';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import { ChevronDown, Check } from 'lucide-react';
+import { Table } from '@radix-ui/themes';
+import { useSearchParams } from 'react-router-dom';
 
 export default function WorkerPage() {
+  const [searchParams] = useSearchParams();
   const [station, setStation] = useState(
     () => localStorage.getItem(STATION_STORAGE_KEY) || ''
   );
@@ -25,15 +28,15 @@ export default function WorkerPage() {
     }
   }, [project]);
 
-  const handleStationSelect = (e) => {
-    const value = e.target.value;
-    setStation(value);
-    localStorage.setItem(STATION_STORAGE_KEY, value);
-  };
+  useEffect(() => {
+    const param = searchParams.get('station');
+    if (param) {
+      setStation(param);
+      localStorage.setItem(STATION_STORAGE_KEY, param);
+    }
+  }, [searchParams]);
 
-  const handleProjectSelect = (e) => {
-    setProject(e.target.value);
-  };
+
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
@@ -48,30 +51,7 @@ export default function WorkerPage() {
     return (
       <div className="space-y-4">
         <h2 className="text-brand-349 text-xl font-semibold">Select Station</h2>
-        <Select.Root value={station} onValueChange={handleStationSelect}>
-          <Select.Trigger className="inline-flex items-center justify-between border border-gray-300 rounded-lg px-3 py-2 w-60">
-            <Select.Value placeholder="Choose…" />
-            <Select.Icon asChild>
-              <ChevronDown size={16} />
-            </Select.Icon>
-          </Select.Trigger>
-          <Select.Portal>
-            <Select.Content className="bg-white shadow rounded-md border p-1">
-              {Object.entries(PRODUCTION_STATIONS).map(([key, label]) => (
-                <Select.Item
-                  key={key}
-                  value={label}
-                  className="px-3 py-1.5 rounded-md flex items-center gap-2 text-sm hover:bg-gray-100 cursor-pointer"
-                >
-                  <Select.ItemText>{label}</Select.ItemText>
-                  <Select.ItemIndicator className="ml-auto">
-                    <Check size={14} />
-                  </Select.ItemIndicator>
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select.Portal>
-        </Select.Root>
+        <p>Select a station from the sidebar to begin.</p>
       </div>
     );
   }
@@ -80,30 +60,28 @@ export default function WorkerPage() {
     return (
       <div className="space-y-4">
         <h2 className="text-brand-349 text-xl font-semibold">Select Project</h2>
-        <Select.Root value={project} onValueChange={handleProjectSelect}>
-          <Select.Trigger className="inline-flex items-center justify-between border border-gray-300 rounded-lg px-3 py-2 w-72">
-            <Select.Value placeholder="Choose…" />
-            <Select.Icon asChild>
-              <ChevronDown size={16} />
-            </Select.Icon>
-          </Select.Trigger>
-          <Select.Portal>
-            <Select.Content className="bg-white shadow rounded-md border p-1 max-h-60 overflow-y-auto">
-              {sampleProjects.map((p) => (
-                <Select.Item
-                  key={p.id}
-                  value={p.id}
-                  className="px-3 py-1.5 rounded-md flex items-center gap-2 text-sm hover:bg-gray-100 cursor-pointer"
-                >
-                  <Select.ItemText>{p.name}</Select.ItemText>
-                  <Select.ItemIndicator className="ml-auto">
-                    <Check size={14} />
-                  </Select.ItemIndicator>
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select.Portal>
-        </Select.Root>
+        <Table.Root className="border rounded-lg w-full">
+          <Table.Header>
+            <Table.Row>
+              <Table.ColumnHeaderCell>Name</Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell>Product</Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell>Quantity</Table.ColumnHeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {sampleProjects.map((p) => (
+              <Table.Row
+                key={p.id}
+                onClick={() => setProject(p.id)}
+                className="cursor-pointer hover:bg-gray-100"
+              >
+                <Table.RowHeaderCell>{p.name}</Table.RowHeaderCell>
+                <Table.Cell>{p.productName}</Table.Cell>
+                <Table.Cell>{p.numOfItems}</Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table.Root>
       </div>
     );
   }
@@ -115,6 +93,16 @@ export default function WorkerPage() {
 
   return (
     <div className="space-y-4">
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setProject('')}
+          className="px-2 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300"
+        >
+          Change
+        </button>
+        <div className="font-medium">{projectData?.name}</div>
+      </div>
       <h2 className="text-brand-349 text-xl font-semibold">Scan Item</h2>
       <input
         ref={inputRef}
