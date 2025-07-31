@@ -95,14 +95,7 @@ export default function WorkerPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={() => setProject('')}
-          className="px-2 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300"
-        >
-          Change
-        </button>
-        <Box maxWidth="240px">
+        <Box maxWidth="240px" className=''>
           <Card>
             <Flex gap="3" align="center">
               <Box>
@@ -116,6 +109,13 @@ export default function WorkerPage() {
             </Flex>
           </Card>
         </Box>
+        <button
+          type="button"
+          onClick={() => setProject('')}
+          className="px-2 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300"
+        >
+          Change
+        </button>
       </div>
       <h2 className="text-brand-349 text-xl font-semibold">Scan Item</h2>
       <input
